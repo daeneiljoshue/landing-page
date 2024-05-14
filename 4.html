@@ -305,7 +305,20 @@ body, html {
     </div>
 </div>
 
-<!-- ... (existing HTML content after the new section) -->
+<!-- Contact Section -->
+<section id="contact">
+  <div class="container">
+    <h2>Get in Touch</h2>
+    <p>Have questions about LUMI? We'd love to hear from you. Send us a message and we'll get back to you as soon as possible.</p>
+    <form action="submit_form.php" method="post">
+      <input type="text" id="name" name="name" placeholder="Your Name" required>
+      <input type="email" id="email" name="email" placeholder="Your Email" required>
+      <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
 
 
     <footer class="footer">
