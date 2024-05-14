@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refuel - Data Labeling with LLMs</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <style>
+         
+       /* General Styles */
+body, html {
+    background-color: #000; /* Dark background */
+    color: white; /* Light text color for contrast */
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.navbar a, .dropdown .dropbtn {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar a:hover, .dropdown-content a:hover {
+    background-color: #555;
+    color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+/* Dropdown Button */
+.dropdown .dropbtn {
+    font-size: 16px;    
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #444;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 50vh; /* Adjusted height */
+    background-image: url('44.jpeg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0; /* Remove any bottom margin */
+}
+
+.dynamic-text span {
+    color: rgba(0, 0, 255, 1);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 1); 
+    font-weight: bold; /* Make it bold */
+    webkit-text-fill-color: rgba(0, 0, 255, 0.5);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.hero-text {
+    text-align: center;
+    color: white;
+    max-width: 600px; 
+}
+
+/* CVAT Section */
+.cvat-section {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.2); /* Lighten the background for better readability */
+    overflow: auto; 
+    max-height: 100vh;
+}
+
+.cvat-section > div {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+}
+
+.cvat-section div > div {
+    flex-basis: 50%;
+    padding: 0 20px; 
+    box-sizing: border-box; 
+}
+
+.cvat-section img, .cvat-section .cvat-button {
+    max-width: 70%;
+    height: auto;
+}
+
+.cvat-content {
+    display: flex;
+    width: 100%;
+}
+
+.cvat-info {
+    width: 50%;
+    padding-left: 20px;
+}
+
+/* Features List */
+.cvat-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: item;
+}
+
+.cvat-features li {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px 20px; /* Adjust padding to match the image */
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 2px solid #777; /* White divider, increased thickness for visibility */
+    background-color: #333; /* Dark grey background for list items */
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    display: flex; /* Use flexbox for aligning content */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the start of the container */
+}
+
+.cvat-features li::before {
+    content: counter(item) " "; /* Add the number before the item */
+    counter-increment: item; /* Increment the counter */
+    position: absolute;
+    left: -30px; /* Adjust as needed */
+    font-weight: bold;
+    font-size: 24px; /* Make the numbers larger as per the image */
+    color: #333; /* Adjust the color to match the image */
+}
+
+.cvat-features li span {
+    margin-left: 40px; /* Space out the number and title */
+}
+
+.cvat-features li:last-child {
+    border-bottom: none; /* No divider for the last item */
+}
+
+.cvat-features li:hover {
+    background-color: #555; /* Darker background on hover */
+    color: #fff; /* Light text color on hover */
+}
+
+/* Call to Action Button */
+.cta-button {
+    padding: 15px 30px;
+    background-color: #ff4500; /* Bright color for visibility */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px; /* Larger font size */
+    font-weight: bold; /* Bold font weight */
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #e03d00; /* Slightly darker on hover */
+}
+
+/* Footer Section */
+.footer {
+    background-color: #222; /* Darker background for footer */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative; /* Changed from fixed to relative */
+    bottom: 0;
+    width: 100%; /* Ensure full width */
+}
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <!-- Navigation Bar -->
+        <a href="#platform">Platform</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#resources">Resources</a>
+        <a href="#company">Company</a>
+        <a href="#sign-in">Sign In</a>
+        <button class="cta-button" onclick="location.href='#get-started'">Get Started</button>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-text">
+            <h1><span class="dynamic-text"></span> your data with LLMs.</h1>
+            <p>Accuracy matters. To your users, and to us. Refuel helps you effortlessly evaluate, build and deploy the best AI model for every use case, so you can reliably unlock the value of AI for your business today.</p>
+            <button onclick="location.href='#get-started'" class="cta-button">Get Started</button>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Welcome to Refuel</h2>
+        <p>Discover the power of language models and how they can transform your data into actionable insights.</p>
+    </div>
+
+
+<!-- Annotation Guide Section -->
+<section id="annotation-guide">
+    <h2>How to Annotate with CVAT</h2>
+    <div class="guide-step">
+        <h3>Step 1: Access CVAT</h3>
+        <p>Visit the CVAT website and sign in or sign up to start using the tool.</p>
+    </div>
+    <div class="guide-step">
+        <h3>Step 2: Create a New Task</h3>
+        <p>Create a new annotation task by specifying the task name, labels, and uploading your files.</p>
+    </div>
+    <div class="guide-step">
+        <h3>Step 3: Annotate Your Images</h3>
+        <p>Open the task and use tools like bounding boxes, polygons, or polylines to annotate your images.</p>
+    </div>
+    <div class="guide-step">
+        <h3>Step 4: Review and Adjust Annotations</h3>
+        <p>Review your annotations and make adjustments as necessary to ensure accuracy.</p>
+    </div>
+    <div class="guide-step">
+        <h3>Step 5: Export Annotations</h3>
+        <p>Once you're satisfied with the annotations, export the data in the desired format for your project.</p>
+    </div>
+</section>
+
+
+<!-- ... (existing HTML content before the new section) -->
+<!-- CVAT Section -->
+<div class="cvat-section">
+    <div class="cvat-content">
+        <div class="cvat-image">
+            <img id="dynamicImage" src="bird.jpeg" alt="A bird on a branch">
+        </div>
+        <div class="cvat-info">
+            <p>No matter what your input data or expected results are, CVAT is ready. It works great with images, videos, and even 3D.</p>
+            <ol>
+                <li onclick="changeImage('imageClassification')"><span>Image Classification</li>
+                <li onclick="changeImage('objectDetection')"><span>Object Detection</li>
+                <li onclick="changeImage('segmentation')"><span>Semantic and Instance Segmentation</li>
+                <li onclick="changeImage('lidar')"><span>Point Clouds / LIDAR</li>
+                <li onclick="changeImage('cuboids')"><span>3D Cuboids</li>
+                <li onclick="changeImage('video')"><span>video</li>
+                <li onclick="changeImage('skeleton')"><span>skeleton</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- ... (existing HTML content after the new section) -->
+
+
+    <footer class="footer">
+        <p>© 2024 Refuel. All rights reserved.</p>
+        <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-use">Terms of Use</a> | <a href="/sitemap">Sitemap</a></p>
+    </footer>
+
+<script>
+    // Dynamic Text Script
+    const phrases = ['Tag', 'Create', 'Label', 'Enrich'];
+    let currentPhraseIndex = 0;
+    const dynamicTextElement = document.querySelector('.dynamic-text');
+
+    setInterval(() => {
+        dynamicTextElement.innerHTML = '<span>' + phrases[currentPhraseIndex] + '</span>';
+        currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+    }, 1000); // Change every 1 second
+
+    // Function to change the image
+    function changeImage(imageId) {
+        console.log('Changing image to:', imageId); // Debug log
+        var imagePath = '';
+        switch(imageId) {
+            case 'imageClassification':
+                imagePath = 'bird.jpeg';
+                break;
+            case 'objectDetection':
+                imagePath = 'object_detection.jpg';
+                break;
+            case 'segmentation':
+                imagePath = 'segmentation.jpg';
+                break;
+            case 'lidar':
+                imagePath = 'lidar.jpeg';
+                break;
+            case 'cuboids':
+                imagePath = 'cuboids.jpg';
+                break;
+            case 'video':
+                imagePath = 'video.jpeg';
+                break;
+            case 'skeleton':
+                imagePath = 'video.jpeg';
+                break;
+        }
+        document.getElementById('dynamicImage').src = imagePath;
+    }
+
+    // Event listeners for list items
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Document is ready.'); // Debug log
+        document.getElementById('imageClassification').addEventListener('click', () => changeImage('imageClassification'));
+        document.getElementById('objectDetection').addEventListener('click', () => changeImage('objectDetection'));
+        document.getElementById('segmentation').addEventListener('click', () => changeImage('segmentation'));
+        document.getElementById('lidar').addEventListener('click', () => changeImage('lidar'));
+        document.getElementById('cuboids').addEventListener('click', () => changeImage('cuboids'));
+        document.getElementById('video').addEventListener('click', () => changeImage('video'));
+        document.getElementById('skeleton').addEventListener('click', () => changeImage('skeleton'));
+    });
+</script>
+
+
+</body>
+</html>
+
