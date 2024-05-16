@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refuel - Data Labeling with LLMs</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <style>
+         
+       /* General Styles */
+body, html {
+    background-color: #000; /* Dark background */
+    color: white; /* Light text color for contrast */
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.navbar a, .dropdown .dropbtn {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar a:hover, .dropdown-content a:hover {
+    background-color: #555;
+    color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+/* Dropdown Button */
+.dropdown .dropbtn {
+    font-size: 16px;    
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #444;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 50vh; /* Adjusted height */
+    background-image: url('44.jpeg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0; /* Remove any bottom margin */
+}
+
+.dynamic-text span {
+    color: rgba(0, 0, 255, 1);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 1); 
+    font-weight: bold; /* Make it bold */
+    webkit-text-fill-color: rgba(0, 0, 255, 0.5);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.hero-text {
+    text-align: center;
+    color: white;
+    max-width: 600px; 
+}
+
+/* CVAT Section */
+.cvat-section {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.2); /* Lighten the background for better readability */
+    overflow: auto; 
+    max-height: 100vh;
+}
+
+.cvat-section > div {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+}
+
+.cvat-section div > div {
+    flex-basis: 50%;
+    padding: 0 20px; 
+    box-sizing: border-box; 
+}
+
+.cvat-section img, .cvat-section .cvat-button {
+    max-width: 70%;
+    height: auto;
+}
+
+.cvat-content {
+    display: flex;
+    width: 100%;
+}
+
+.cvat-info {
+    width: 50%;
+    padding-left: 20px;
+}
+
+/* Features List */
+.cvat-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: item;
+}
+
+.cvat-features li {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 10px 20px; /* Adjust padding to match the image */
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 2px solid #777; /* White divider, increased thickness for visibility */
+    background-color: #333; /* Dark grey background for list items */
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    display: flex; /* Use flexbox for aligning content */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the start of the container */
+}
+
+.cvat-features li::before {
+    content: counter(item) " "; /* Add the number before the item */
+    counter-increment: item; /* Increment the counter */
+    position: absolute;
+    left: -30px; /* Adjust as needed */
+    font-weight: bold;
+    font-size: 24px; /* Make the numbers larger as per the image */
+    color: #333; /* Adjust the color to match the image */
+}
+
+.cvat-features li span {
+    margin-left: 40px; /* Space out the number and title */
+}
+
+.cvat-features li:last-child {
+    border-bottom: none; /* No divider for the last item */
+}
+
+.cvat-features li:hover {
+    background-color: #555; /* Darker background on hover */
+    color: #fff; /* Light text color on hover */
+}
+
+/* Call to Action Button */
+.cta-button {
+    padding: 15px 30px;
+    background-color: #ff4500; /* Bright color for visibility */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px; /* Larger font size */
+    font-weight: bold; /* Bold font weight */
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #e03d00; /* Slightly darker on hover */
+}
+
+/* Style for Content Section */
+.content-section {
+    background-color: #f8f9fa; /* Light grey background */
+    color: #333; /* Dark text for readability */
+        border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.content-section h2 {
+    color: #333;
+}
+.content-section p {
+    color: #555;
+    line-height: 1.6;
+}
+
+
+/* Style for Annotation Guide Section */
+#annotation-guide {
+    background-color: #333; /* Dark background for visibility */
+    color: #fff; /* White text for contrast */
+    padding: 20px; /* Spacing inside the section */
+    margin: 0; /* Remove gap below the section */
+    width: 100%;
+    boxing-size: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+* Ensure the body or any container element doesn't have padding or margin that affects it */
+body, .container {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Additional reset for any other elements that might affect the layout */
+*, *::before, *::after {
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* If the Annotation Guide is within a container, set the container to full width as well */
+.container {
+    width: 100%;
+}
+
+/* Full-width Annotation Guide Section Styling */
+.guide-container {
+    background-color: #f7f7f7; /* Light grey background */
+    border-radius: 0; /* Remove rounded corners to fit full width */
+    box-shadow: none; /* Remove box shadow */
+    padding: 30px; /* Maintain inner spacing */
+    margin: 0 auto; /* Remove any horizontal margin */
+    max-width: none; /* Allow the container to take full width */
+    width: 80vw; /* Set width to full viewport width */
+}
+
+.guide-title {
+    text-align: center; /* Center the title */
+    margin-bottom: 30px; /* Space below the title */
+    color: #333; /* Dark text for contrast */
+    font-size: 2.5em; /* Larger font size for the title */
+}
+
+.guide-steps {
+    display: flex;
+    flex-direction: column; /* Stack steps vertically */
+}
+
+.guide-step {
+    background-color: #ffffff; /* White background for each step */
+    margin-bottom: 20px; /* Space between steps */
+    padding: 20px; /* Spacing inside each step */
+    border-radius: 4px; /* Rounded corners for each step */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Shadow for each step */
+    justify-content:space-between;
+    align-items: center;
+    display: flex;
+}
+
+.video-right .step-content,
+.video-left .step-content {
+     flex: 1;
+}
+
+.video-right .step-video,
+.video-left .step-video {
+    flex: 1; /* Take up half the space */
+}
+
+.video-left {
+    flex-direction: row-reverse; /* Reverse the order for video on the left */
+}
+
+/* Add styles for the video container */
+.step-video {
+    /* Style as needed, e.g., padding, background, etc. */
+}
+
+.guide-step h3 {
+    color: #007bff; /* Blue color for step titles */
+    margin-bottom: 10px; /* Space below step title */
+}
+
+.guide-step p {
+    color: #666; /* Grey color for step description */
+    line-height: 1.6; /* Line height for readability */
+}
+
+
+/* Contact Section Styling */
+#contact-section .contact {
+    background-color: #0056b3; /* Adjusted darker blue for contrast */
+    color: #ffffff;
+    padding: 40px; /* Increased padding for a better layout */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    max-width: 600px; /* Max width for better readability on larger screens */
+    margin: 40px auto; /* Center the section with margin */
+    text-align: center; /* Center align the text */
+}
+
+#contact-section h2 {
+    margin-bottom: 30px; /* Space below the heading */
+    font-size: 2em; /* Larger font size for the heading */
+}
+
+#contact-section form {
+    display: flex;
+    flex-direction: column; /* Stack form fields vertically */
+}
+
+#contact-section input[type="text"],
+#contact-section input[type="email"],
+#contact-section textarea {
+    margin-bottom: 20px; /* Space between form fields */
+    padding: 15px; /* Padding inside form fields */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners for form fields */
+    font-size: 1em; /* Font size for form fields */
+}
+
+#contact-section button[type="submit"] {
+    padding: 15px;
+    background-color: #ff9900; /* Orange color for the button */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; /* Cursor change to indicate button */
+    transition: background-color 0.3s ease; /* Transition for button hover effect */
+}
+
+#contact-section button[type="submit"]:hover {
+    background-color: #e68a00; /* Darker shade of orange on hover */
+}
+
+#contact-section .contact {
+    background: linear-gradient(135deg, #0056b3, #004080); /* Gradient background for visual appeal */
+    color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly darker shadow for more depth */
+    max-width: 600px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+
+/* Additional styles to remove gaps between sections */
+.content-section, #annotation-guide, .contact {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Ensure that the body has no margin */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Footer Section */
+.footer {
+    background-color: #222; /* Darker background for footer */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative; /* Changed from fixed to relative */
+    bottom: 0;
+    width: 100%; /* Ensure full width */
+}
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <!-- Navigation Bar -->
+        <a href="#platform">Platform</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#resources">Resources</a>
+        <a href="#company">Company</a>
+        <a href="#sign-in">Sign In</a>
+        <button class="cta-button" onclick="location.href='#get-started'">Get Started</button>
+    </div>
+
+    <div class="hero-section">
+  <div class="hero-text">
+    <h1><span class="dynamic-text"></span> your data for AI with LLMs.</h1>
+    <p>Unleash the power of AI with Refuel's data labeling platform. Effortlessly build and deploy high-quality training data to fuel your machine learning models.</p>
+    <a href="#get-started" class="cta-button">Get Started</a>
+  </div>
+</div>
+
+
+   <div class="content-section">
+    <h2>Welcome to Refuel</h2>
+    <p>Discover the power of language models and how they can transform your data into actionable insights.</p>
+    <p>Refuel is at the forefront of data labeling and annotation, offering cutting-edge tools that cater to the needs of both beginners and experts in the field of machine learning. Our user-friendly interface simplifies the process of preparing your data, ensuring precision and efficiency.</p>
+    <p>Explore our platform and take the first step towards supercharging your AI and machine learning projects with Refuel.</p>
+    <button class="cta-button">Get Started</button>
+</div>
+
+
+<!-- Annotation Guide Section -->
+<section id="annotation-guide" class="guide-container">
+    <h2 class="guide-title">How to Annotate with CVAT</h2>
+    <div class="guide-steps">
+        <!-- Step 1 with Video on the Right -->
+        <div class="guide-step">
+            <div class="step-text">
+                <h3>Step 1: Access CVAT</h3>
+                <p>Visit the CVAT website and sign in or sign up to start using the tool.</p>
+            </div>
+            <div class="step-video">
+                <!-- Embed Step 1 Video Here -->
+            </div>
+        </div>
+        <!-- Step 2 with Video on the Left -->
+        <div class="guide-step reverse">
+            <div class="step-video">
+                <!-- Embed Step 2 Video Here -->
+            </div>
+            <div class="step-text">
+                <h3>Step 2: Create a New Task</h3>
+                <p>Create a new annotation task by specifying the task name, labels, and uploading your files.</p>
+            </div>
+        </div>
+        <!-- Step 3 with Video on the Right -->
+        <div class="guide-step">
+            <div class="step-text">
+                <h3>Step 3: Annotate Your Images</h3>
+                <p>Open the task and use tools like bounding boxes, polygons, or polylines to annotate your images.</p>
+            </div>
+            <div class="step-video">
+                <!-- Embed Step 3 Video Here -->
+            </div>
+        </div>
+        <!-- Step 4 with Video on the Left -->
+        <div class="guide-step reverse">
+            <div class="step-video">
+                <!-- Embed Step 4 Video Here -->
+            </div>
+            <div class="step-text">
+                <h3>Step 4: Review and Adjust Annotations</h3>
+                <p>Review your annotations and make adjustments as necessary to ensure accuracy.</p>
+            </div>
+        </div>
+        <!-- Step 5 with Video on the Right -->
+        <div class="guide-step">
+            <div class="step-text">
+                <h3>Step 5: Export Annotations</h3>
+                <p>Once you're satisfied with the annotations, export the data in the desired format for your project.</p>
+            </div>
+            <div class="step-video">
+                <!-- Embed Step 5 Video Here -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<div class="cvat-section">
+  <div class="cvat-content">
+    <div class="cvat-image">
+      <img id="dynamicImage" src="bird.jpeg" alt="A bird on a branch">
+    </div>
+    <div class="cvat-info">
+      <p>Refuel empowers you to handle any data format, from images and videos to 3D point clouds, for seamless annotation with CVAT.</p>
+      <ol class="cvat-features"> <li onclick="changeImage('imageClassification')"><span>Image Classification</span></li>
+        <li onclick="changeImage('objectDetection')"><span>Object Detection</span></li>
+        <li onclick="changeImage('segmentation')"><span>Semantic &amp; Instance Segmentation</span></li>
+        <li onclick="changeImage('lidar')"><span>Point Clouds / LIDAR</span></li>
+        <li onclick="changeImage('cuboids')"><span>3D Cuboids</span></li>
+        <li onclick="changeImage('video')"><span>Video</span></li>
+        <li onclick="changeImage('skeleton')"><span>Skeleton Tracking</span></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<section id="contact-section">
+  <div class="contact">
+    <h2>Get in Touch</h2>
+    <p>Have questions about LUMI? We'd love to hear from you. Send us a message and we'll get back to you as soon as possible.</p>
+    <form action="https://formsubmit.co/spectrome7@gmail.com" method="post">
+      <input type="text" id="name" name="name" placeholder="Your Name" required>
+      <input type="email" id="email" name="email" placeholder="Your Email" required>
+      <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+
+
+    <footer class="footer">
+        <p>© 2024 Refuel. All rights reserved.</p>
+        <p><a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-use">Terms of Use</a> | <a href="/sitemap">Sitemap</a></p>
+    </footer>
+
+<script>
+    // Dynamic Text Script
+    const phrases = ['Tag', 'Create', 'Label', 'Enrich'];
+    let currentPhraseIndex = 0;
+    const dynamicTextElement = document.querySelector('.dynamic-text');
+
+    setInterval(() => {
+        dynamicTextElement.innerHTML = '<span>' + phrases[currentPhraseIndex] + '</span>';
+        currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+    }, 1000); // Change every 1 second
+
+    // Function to change the image
+    function changeImage(imageId) {
+        console.log('Changing image to:', imageId); // Debug log
+        var imagePath = '';
+        switch(imageId) {
+            case 'imageClassification':
+                imagePath = 'bird.jpeg';
+                break;
+            case 'objectDetection':
+                imagePath = 'object_detection.jpg';
+                break;
+            case 'segmentation':
+                imagePath = 'segmentation.jpg';
+                break;
+            case 'lidar':
+                imagePath = 'lidar.jpeg';
+                break;
+            case 'cuboids':
+                imagePath = 'cuboids.jpg';
+                break;
+            case 'video':
+                imagePath = 'video.jpeg';
+                break;
+            case 'skeleton':
+                imagePath = 'video.jpeg';
+                break;
+        }
+        document.getElementById('dynamicImage').src = imagePath;
+    }
+
+    // Event listeners for list items
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Document is ready.'); // Debug log
+        document.getElementById('imageClassification').addEventListener('click', () => changeImage('imageClassification'));
+        document.getElementById('objectDetection').addEventListener('click', () => changeImage('objectDetection'));
+        document.getElementById('segmentation').addEventListener('click', () => changeImage('segmentation'));
+        document.getElementById('lidar').addEventListener('click', () => changeImage('lidar'));
+        document.getElementById('cuboids').addEventListener('click', () => changeImage('cuboids'));
+        document.getElementById('video').addEventListener('click', () => changeImage('video'));
+        document.getElementById('skeleton').addEventListener('click', () => changeImage('skeleton'));
+    });
+</script>
+
+</body>
+</html>
+
